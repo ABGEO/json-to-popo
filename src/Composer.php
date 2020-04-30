@@ -57,6 +57,10 @@ class Composer
      */
     public function composeObject(string $json, string $class)
     {
+        if (!class_exists($class)) {
+            throw new \InvalidArgumentException("Class \"$class\" not found!");
+        }
+
         $mainObject = new $class();
         $objectVariables = get_object_vars(json_decode($json));
 
