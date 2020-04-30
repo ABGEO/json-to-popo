@@ -45,15 +45,7 @@ class Department
 {
     private $title;
 
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): void
-    {
-        $this->title = $title;
-    }
+    // Getters and Setters here...
 }
 ```
 
@@ -67,16 +59,6 @@ class Position
     private $title;
     private $department;
 
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function setTitle($title): void
-    {
-        $this->title = $title;
-    }
-
     public function getDepartment(): Department
     {
         return $this->department;
@@ -86,6 +68,8 @@ class Position
     {
         $this->department = $department;
     }
+    
+    // Other Getters and Setters here...
 }
 
 ```
@@ -102,36 +86,6 @@ class Person
     private $active;
     private $position;
 
-    public function getFirstName(): string
-    {
-        return $this->firstName;
-    }
-
-    public function setFirstName(string $firstName): void
-    {
-        $this->firstName = $firstName;
-    }
-
-    public function getLastName(): string
-    {
-        return $this->lastName;
-    }
-
-    public function setLastName(string $lastName): void
-    {
-        $this->lastName = $lastName;
-    }
-
-    public function isActive(): bool
-    {
-        return $this->active;
-    }
-
-    public function setActive(bool $active): void
-    {
-        $this->active = $active;
-    }
-
     public function getPosition(): Position
     {
         return $this->position;
@@ -141,6 +95,8 @@ class Person
     {
         $this->position = $position;
     }
+
+    // Other Getters and Setters here...
 }
 
 ```
