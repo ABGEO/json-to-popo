@@ -1,30 +1,31 @@
 {
-    "name": "abgeo/json-to-popo",
-    "description": "Fill Plain Old PHP Object with JSON content.",
-    "type": "library",
-    "keywords": [
-        "POPO",
-        "JSON",
-        "API"
-    ],
-    "homepage": "https://github.com/ABGEO07/json-to-popo",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Temuri Takalandze",
-            "email": "takalandzet@gmail.com",
-            "homepage": "https://www.abgeo.dev",
-            "role": "Developer"
-        }
-    ],
-    "minimum-stability": "dev",
-    "require": {
-        "php": "^7.0"
-    },
-    "require-dev": {},
-    "autoload": {
-        "psr-4": {
-            "ABGEO\\POPO\\": "src/"
-        }
+  "name": "abgeo/json-to-popo",
+  "description": "Fill Plain Old PHP Object with JSON content.",
+  "type": "library",
+  "keywords": [
+    "POPO",
+    "JSON",
+    "API"
+  ],
+  "homepage": "https://github.com/ABGEO07/json-to-popo",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Temuri Takalandze",
+      "email": "takalandzet@gmail.com",
+      "homepage": "https://www.abgeo.dev",
+      "role": "Developer"
     }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": "^7.0",
+    "ext-json": "*"
+  },
+  "require-dev": {},
+  "autoload": {
+    "psr-4": {
+      "ABGEO\\POPO\\": "src/"
+    }
+  }
 }
