@@ -1,0 +1,11 @@
+{
+  "firstName": "Temuri",
+  "lastName": "Takalandze",
+  "active": true,
+  "position": {
+    "title": "Developer",
+    "department": {
+      "title": "IT"
+    }
+  }
+}
