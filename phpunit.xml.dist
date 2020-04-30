@@ -3,6 +3,9 @@
 <phpunit bootstrap="tests/bootstrap.php"
          colors="true"
          verbose="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
          stopOnFailure="false"
 >
     <testsuites>
@@ -10,4 +13,21 @@
             <directory>tests</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory>./src/</directory>
+        </whitelist>
+    </filter>
+    <logging>
+        <log
+                type="coverage-html"
+                target="./coverage"
+                lowUpperBound="20"
+                highLowerBound="50"
+        />
+        <log
+                type="coverage-clover"
+                target="clover.xml"
+        />
+    </logging>
 </phpunit>
