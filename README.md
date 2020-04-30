@@ -2,6 +2,11 @@
 
 Fill Plain Old PHP Object with JSON content.
 
+[![Build Status](https://travis-ci.com/ABGEO07/json-to-popo.svg?branch=master)](https://travis-ci.com/ABGEO07/json-to-popo)
+[![Coverage Status](https://coveralls.io/repos/github/ABGEO07/json-to-popo/badge.svg?branch=master)](https://coveralls.io/github/ABGEO07/json-to-popo?branch=master)
+[![GitHub release](https://img.shields.io/github/release/ABGEO07/json-to-popo.svg)](https://github.com/ABGEO07/json-to-popo/releases)
+[![GitHub license](https://img.shields.io/github/license/ABGEO07/json-to-popo.svg)](https://github.com/ABGEO07/json-to-popo/blob/master/LICENSE)
+
 ## Authors
 
 - [**Temuri Takalandze**](https://abgeo.dev) - *Initial work*
