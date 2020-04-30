@@ -1,0 +1,12 @@
+{
+  "int": 20000,
+  "string": "Hello World",
+  "float": 1.25,
+  "bool": true,
+  "array": [
+    "item1",
+    "item2",
+    "item3",
+    "item4"
+  ]
+}
