@@ -16,21 +16,15 @@ use ABGEO\POPO\Test\Meta\Classes\Class1;
 use ABGEO\POPO\Test\Meta\Classes\Class2;
 use ABGEO\POPO\Test\Meta\Classes\Class3;
 use ABGEO\POPO\Test\Meta\Classes\Class4;
+use ABGEO\POPO\Test\Meta\Classes\Class5;
 use PHPUnit\Framework\TestCase;
 
 class ComposerTest extends TestCase
 {
-    public function testAddClassMappingMethodClassNotFoundException(): void
-    {
-        $composer = new Composer();
-        $this->expectExceptionMessage('Class "InvalidClass" not found!');
-        $composer->addClassMapping('someProperty', 'InvalidClass');
-    }
-
     public function testComposeObjectMethodClassNotFoundException(): void
     {
         $composer = new Composer();
-        $this->expectExceptionMessage('Class "InvalidClass" not found!');
+        $this->expectExceptionMessage('Class \'InvalidClass\' not found!');
         $composer->composeObject('{}', 'InvalidClass');
     }
 
@@ -58,22 +52,11 @@ class ComposerTest extends TestCase
         $this->assertEquals($excepted->array, $actual->getArray());
     }
 
-    public function testComposeObjectMethodClassMappingNotFoundException(): void
-    {
-        $composer = new Composer();
-        $jsonContent = file_get_contents(__DIR__ . '/Meta/JSON/2.json');
-
-        $this->expectExceptionMessage('Class mapping not found for property "class2"!');
-        $composer->composeObject($jsonContent, Class3::class);
-    }
-
     public function testComposeObjectMethodWithObject(): void
     {
         $composer = new Composer();
         $jsonContent = file_get_contents(__DIR__ . '/Meta/JSON/2.json');
         $excepted = json_decode($jsonContent);
-
-        $composer->addClassMapping('class2', Class2::class);
 
         /** @var Class3 $actual */
         $actual = $composer->composeObject($jsonContent, Class3::class);
@@ -90,9 +73,6 @@ class ComposerTest extends TestCase
         $jsonContent = file_get_contents(__DIR__ . '/Meta/JSON/3.json');
         $excepted = json_decode($jsonContent);
 
-        $composer->addClassMapping('class2', Class2::class);
-        $composer->addClassMapping('class3', Class3::class);
-
         /** @var Class4 $actual */
         $actual = $composer->composeObject($jsonContent, Class4::class);
 
@@ -108,7 +88,27 @@ class ComposerTest extends TestCase
         $composer = new Composer();
         $jsonContent = file_get_contents(__DIR__ . '/Meta/JSON/4.json');
 
-        $this->expectExceptionMessage('Method "setUndefinedProperty" not found in target object!');
+        $this->expectExceptionMessage(
+            'Class \'ABGEO\POPO\Test\Meta\Classes\Class1\' does not have a method \'setUndefinedProperty\''
+        );
         $composer->composeObject($jsonContent, Class1::class);
+    }
+
+    public function testComposeObjectMethodUndefinedClassPropertyType(): void
+    {
+        $composer = new Composer();
+        $jsonContent = file_get_contents(__DIR__ . '/Meta/JSON/5.json');
+        $this->expectExceptionMessage(
+            'Type of Property \'ABGEO\POPO\Test\Meta\Classes\Class5::$undefinedType\' is undefined!'
+        );
+        $composer->composeObject($jsonContent, Class5::class);
+    }
+
+    public function testComposeObjectMethodInvalidJSONException(): void
+    {
+        $composer = new Composer();
+        $jsonContent = file_get_contents(__DIR__ . '/Meta/JSON/6.json');
+        $this->expectExceptionMessage('The JSON content is invalid!');
+        $composer->composeObject($jsonContent, 'InvalidClass');
     }
 }

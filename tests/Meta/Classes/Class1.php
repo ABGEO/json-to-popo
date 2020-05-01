@@ -13,11 +13,11 @@ namespace ABGEO\POPO\Test\Meta\Classes;
 
 class Class1
 {
-    private $int;
-    private $string;
-    private $float;
-    private $bool;
-    private $array;
+    private int $int;
+    private string $string;
+    private float $float;
+    private bool $bool;
+    private array $array;
 
     public function getInt()
     {

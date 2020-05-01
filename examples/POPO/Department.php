@@ -4,7 +4,7 @@ namespace ABGEO\POPO\Example;
 
 class Department
 {
-    private $title;
+    private string $title;
 
     public function getTitle(): string
     {

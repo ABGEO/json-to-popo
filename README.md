@@ -5,6 +5,7 @@ Fill Plain Old PHP Object with JSON content.
 [![Build Status](https://travis-ci.com/ABGEO07/json-to-popo.svg?branch=master)](https://travis-ci.com/ABGEO07/json-to-popo)
 [![Coverage Status](https://coveralls.io/repos/github/ABGEO07/json-to-popo/badge.svg?branch=master)](https://coveralls.io/github/ABGEO07/json-to-popo?branch=master)
 [![GitHub release](https://img.shields.io/github/release/ABGEO07/json-to-popo.svg)](https://github.com/ABGEO07/json-to-popo/releases)
+[![Packagist Version](https://img.shields.io/packagist/v/abgeo/json-to-popo.svg)](https://packagist.org/packages/abgeo/json-to-popo)
 [![GitHub license](https://img.shields.io/github/license/ABGEO07/json-to-popo.svg)](https://github.com/ABGEO07/json-to-popo/blob/master/LICENSE)
 
 ## Authors
@@ -12,6 +13,8 @@ Fill Plain Old PHP Object with JSON content.
 - [**Temuri Takalandze**](https://abgeo.dev) - *Initial work*
 
 ## Installation
+
+**Note**: This library requires **PHP 7.4** or higher.
 
 You can install this library with [Composer](https://getcomposer.org/):
 
@@ -48,7 +51,7 @@ and several POPO classes to represent this JSON data:
 
 class Department
 {
-    private $title;
+    private string $title;
 
     // Getters and Setters here...
 }
@@ -61,20 +64,10 @@ class Department
 
 class Position
 {
-    private $title;
-    private $department;
+    private string $title;
+    private Department $department;
 
-    public function getDepartment(): Department
-    {
-        return $this->department;
-    }
-
-    public function setDepartment(Department $department): void
-    {
-        $this->department = $department;
-    }
-    
-    // Other Getters and Setters here...
+    // Getters and Setters here...
 }
 
 ```
@@ -86,25 +79,17 @@ class Position
 
 class Person
 {
-    private $firstName;
-    private $lastName;
-    private $active;
-    private $position;
+    private string $firstName;
+    private string $lastName;
+    private bool $active;
+    private Position $position;
 
-    public function getPosition(): Position
-    {
-        return $this->position;
-    }
-
-    public function setPosition(Position $position): void
-    {
-        $this->position = $position;
-    }
-
-    // Other Getters and Setters here...
+    // Getters and Setters here...
 }
 
 ```
+
+**Note**: All properties in POPO classes must type-hinted (That's why we need PHP 7.4) and have setters.
 
 Now you want to convert this JSON to POPO with relations. This package gives you this ability.
 
@@ -115,23 +100,13 @@ $composer = new Composer();
 $jsonContent = file_get_contents(__DIR__ . '/example.json');
 ```
 
-Now map some JSON keys with your POPOs:
-
-```php
-$composer
-    ->addClassMapping('position', Position::class)
-    ->addClassMapping('department', Department::class);
-```
-
-**Note**: You should only map object types to classes. Other primitive data types will be mapped automatically.
-
 Time for magic! Call `composeObject()` with the contents of JSON and the main class, and this will give you POPO:
 
 ```php
 $resultObject = $composer->composeObject($jsonContent, Person::class);
 ```
 
-print `$resultObject`:
+Print `$resultObject`:
 
 ```php
 var_dump($resultObject);

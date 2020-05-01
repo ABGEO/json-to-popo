@@ -21,32 +21,6 @@ use ABGEO\POPO\Util\Normalizer;
 class Composer
 {
     /**
-     * Additional class mapping.
-     *
-     * @var array JSON.
-     */
-    private $classMapping = [];
-
-    /**
-     * Map target JSON Property to POPO Class.
-     *
-     * @param string $property JSON Property.
-     * @param string $class    Property Class (Use MyClass::class).
-     *
-     * @return $this
-     */
-    public function addClassMapping(string $property, string $class)
-    {
-        if (!class_exists($class)) {
-            throw new \InvalidArgumentException("Class \"$class\" not found!");
-        }
-
-        $this->classMapping[Normalizer::classify($property)] = $class;
-
-        return $this;
-    }
-
-    /**
      * Compose a new object of this given class
      * and fill it with the given JSON content.
      *
@@ -54,18 +28,24 @@ class Composer
      * @param string $class Class to create a new object from.
      *
      * @return mixed New filled with JSON content object of $class class.
+     *
+     * @throws \ReflectionException
      */
     public function composeObject(string $json, string $class)
     {
+        $jsonDecoded = json_decode($json);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \InvalidArgumentException("The JSON content is invalid!");
+        }
+
         if (!class_exists($class)) {
-            throw new \InvalidArgumentException("Class \"$class\" not found!");
+            throw new \InvalidArgumentException("Class '$class' not found!");
         }
 
         $mainObject = new $class();
-        $objectVariables = get_object_vars(json_decode($json));
 
-        foreach ($objectVariables as $property => $value) {
-            $this->fillObject(Normalizer::classify($property), $value, $mainObject);
+        foreach (get_object_vars($jsonDecoded) as $property => $value) {
+            $this->fillObject(Normalizer::camelize($property), $value, $mainObject);
         }
 
         return $mainObject;
@@ -75,27 +55,33 @@ class Composer
      * Recursively fill a given property
      * of a given object with a given value.
      *
-     * @param string $property
-     * @param $value
-     * @param $object
+     * @param string $property Object property to fill.
+     * @param mixed  $value    Value to fill object property with.
+     * @param mixed  $object   Object to fill.
+     *
+     * @throws \ReflectionException
      */
     private function fillObject(string $property, $value, $object)
     {
-        $propertySetter = "set{$property}";
+        $class = get_class($object);
+        $propertySetter = 'set' . ucfirst($property);
         if (!method_exists($object, $propertySetter)) {
-            throw new \RuntimeException("Method \"$propertySetter\" not found in target object!");
+            throw new \RuntimeException("Class '{$class}' does not have a method '{$propertySetter}'");
         }
 
         if (is_object($value)) {
-            if (!isset($this->classMapping[$property])) {
+            $reflectionProperty = new \ReflectionProperty($class, $property);
+
+            if (!$propertyType = $reflectionProperty->getType()) {
                 throw new \RuntimeException(
-                    'Class mapping not found for property "' . Normalizer::camelize($property) . '"!'
+                    "Type of Property '{$class}::\${$property}' is undefined!"
                 );
             }
 
-            $_object = new $this->classMapping[$property]();
+            $_class = $propertyType->getName();
+            $_object = new $_class();
             foreach (get_object_vars($value) as $_property => $_value) {
-                $this->fillObject(Normalizer::classify($_property), $_value, $_object);
+                $this->fillObject(Normalizer::camelize($_property), $_value, $_object);
             }
             $value = $_object;
         }

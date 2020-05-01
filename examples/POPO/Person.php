@@ -4,10 +4,10 @@ namespace ABGEO\POPO\Example;
 
 class Person
 {
-    private $firstName;
-    private $lastName;
-    private $active;
-    private $position;
+    private string $firstName;
+    private string $lastName;
+    private bool $active;
+    private Position $position;
 
     public function getFirstName(): string
     {

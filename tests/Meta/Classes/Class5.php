@@ -11,17 +11,17 @@
 
 namespace ABGEO\POPO\Test\Meta\Classes;
 
-class Class4
+class Class5
 {
-    private Class3 $class3;
+    private $undefinedType;
 
-    public function getClass3(): Class3
+    public function getUndefinedType()
     {
-        return $this->class3;
+        return $this->undefinedType;
     }
 
-    public function setClass3(Class3 $class3): void
+    public function setUndefinedType($undefinedType): void
     {
-        $this->class3 = $class3;
+        $this->undefinedType = $undefinedType;
     }
 }
