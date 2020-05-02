@@ -13,6 +13,9 @@ namespace ABGEO\POPO\Test\Meta\Classes;
 
 class Class8
 {
+    /**
+     * @var string
+     */
     private $fieldPresentedInPOPO;
 
     public function getFieldPresentedInPOPO(): string

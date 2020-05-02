@@ -13,5 +13,8 @@ namespace ABGEO\POPO\Test\Meta\Classes;
 
 class Class7
 {
-    private string $classWithoutSetter;
+    /**
+     * @var string
+     */
+    private $classWithoutSetter;
 }

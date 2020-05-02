@@ -13,10 +13,26 @@ namespace ABGEO\POPO\Test\Meta\Classes;
 
 class Class1
 {
+    /**
+     * @var int
+     */
     private $int;
+
+    /**
+     * @var string
+     */
     private $string;
+
+    /**
+     * @var float
+     */
     private $float;
+
+    /**
+     * @var bool
+     */
     private $bool;
+
     /**
      * @var array
      */

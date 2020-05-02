@@ -104,7 +104,7 @@ class ComposerTest extends TestCase
         $jsonContent = file_get_contents(__DIR__ . '/Meta/JSON/9.json');
 
         $this->expectExceptionMessage(
-            'Class \'ABGEO\POPO\Test\Meta\Classes\Class7\' does not have a method \'setClassWithoutSetter\''
+            'Property \'ABGEO\POPO\Test\Meta\Classes\Class7::$classWithoutSetter\' does not have a setter!'
         );
         $composer->composeObject($jsonContent, Class7::class, Composer::MODE_NON_STRICT);
     }
