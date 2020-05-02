@@ -11,6 +11,14 @@
 
 namespace ABGEO\POPO\Util;
 
+use function preg_match_all;
+use function sizeof;
+use function explode;
+use function strpos;
+use function str_replace;
+use function substr;
+use function preg_match;
+
 /**
  * Parse Class, Method or Property annotations.
  *

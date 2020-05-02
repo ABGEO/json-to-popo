@@ -36,7 +36,7 @@ class Class1
     /**
      * @var array
      */
-    private array $array;
+    private $array;
 
     public function getInt()
     {

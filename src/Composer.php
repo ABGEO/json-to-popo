@@ -27,7 +27,6 @@ use function is_object;
 use function method_exists;
 use function json_decode;
 use function json_last_error;
-use function substr;
 use function ucfirst;
 use function get_class;
 
@@ -55,7 +54,7 @@ class Composer
      *
      * @var array
      */
-    private array $availableModes = [
+    private $availableModes = [
         self::MODE_NON_STRICT,
         self::MODE_STRICT,
     ];
@@ -65,7 +64,7 @@ class Composer
      *
      * @var int
      */
-    private int $mode = self::MODE_STRICT;
+    private $mode = self::MODE_STRICT;
 
     /**
      * Compose a new object of this given class
