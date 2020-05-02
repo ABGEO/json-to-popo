@@ -17,6 +17,7 @@ use ABGEO\POPO\Test\Meta\Classes\Class2;
 use ABGEO\POPO\Test\Meta\Classes\Class3;
 use ABGEO\POPO\Test\Meta\Classes\Class4;
 use ABGEO\POPO\Test\Meta\Classes\Class5;
+use ABGEO\POPO\Test\Meta\Classes\Class6;
 use PHPUnit\Framework\TestCase;
 
 class ComposerTest extends TestCase
@@ -110,5 +111,19 @@ class ComposerTest extends TestCase
         $jsonContent = file_get_contents(__DIR__ . '/Meta/JSON/6.json');
         $this->expectExceptionMessage('The JSON content is invalid!');
         $composer->composeObject($jsonContent, 'InvalidClass');
+    }
+
+    public function testComposeObjectMethodWithKeyedArrays(): void
+    {
+        $composer = new Composer();
+        $jsonContent = file_get_contents(__DIR__ . '/Meta/JSON/7.json');
+        $excepted = json_decode($jsonContent, true);
+
+        /** @var Class6 $actual */
+        $actual = $composer->composeObject($jsonContent, Class6::class);
+
+        $this->assertInstanceOf(Class6::class, $actual);
+        $this->assertIsArray($actual->getKeyedArray());
+        $this->assertEquals($excepted['keyedArray'], $actual->getKeyedArray());
     }
 }

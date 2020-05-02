@@ -78,12 +78,17 @@ class Composer
                 );
             }
 
-            $_class = $propertyType->getName();
-            $_object = new $_class();
-            foreach (get_object_vars($value) as $_property => $_value) {
-                $this->fillObject(Normalizer::camelize($_property), $_value, $_object);
+            $propertyTypeName = $propertyType->getName();
+
+            if ('array' === $propertyTypeName) {
+                $value = get_object_vars($value);
+            } else {
+                $_object = new $propertyTypeName();
+                foreach (get_object_vars($value) as $_property => $_value) {
+                    $this->fillObject(Normalizer::camelize($_property), $_value, $_object);
+                }
+                $value = $_object;
             }
-            $value = $_object;
         }
 
         call_user_func_array([$object, $propertySetter], [$value]);
