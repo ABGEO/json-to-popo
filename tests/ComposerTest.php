@@ -18,6 +18,8 @@ use ABGEO\POPO\Test\Meta\Classes\Class3;
 use ABGEO\POPO\Test\Meta\Classes\Class4;
 use ABGEO\POPO\Test\Meta\Classes\Class5;
 use ABGEO\POPO\Test\Meta\Classes\Class6;
+use ABGEO\POPO\Test\Meta\Classes\Class7;
+use ABGEO\POPO\Test\Meta\Classes\Class8;
 use PHPUnit\Framework\TestCase;
 
 class ComposerTest extends TestCase
@@ -90,9 +92,20 @@ class ComposerTest extends TestCase
         $jsonContent = file_get_contents(__DIR__ . '/Meta/JSON/4.json');
 
         $this->expectExceptionMessage(
-            'Class \'ABGEO\POPO\Test\Meta\Classes\Class1\' does not have a method \'setUndefinedProperty\''
+            'Property ABGEO\POPO\Test\Meta\Classes\Class1::$undefinedProperty does not exist'
         );
         $composer->composeObject($jsonContent, Class1::class);
+    }
+
+    public function testComposeObjectMethodSetterNotFoundException(): void
+    {
+        $composer = new Composer();
+        $jsonContent = file_get_contents(__DIR__ . '/Meta/JSON/9.json');
+
+        $this->expectExceptionMessage(
+            'Class \'ABGEO\POPO\Test\Meta\Classes\Class7\' does not have a method \'setClassWithoutSetter\''
+        );
+        $composer->composeObject($jsonContent, Class7::class, Composer::MODE_NON_STRICT);
     }
 
     public function testComposeObjectMethodUndefinedClassPropertyType(): void
@@ -139,5 +152,22 @@ class ComposerTest extends TestCase
         $this->assertInstanceOf(Class6::class, $actual);
         $this->assertIsArray($actual->getKeyedArray());
         $this->assertEquals($excepted['keyedArray'], $actual->getKeyedArray());
+    }
+
+    public function testComposeObjectMethodInvalidModeException(): void
+    {
+        $composer = new Composer();
+        $this->expectExceptionMessage('Invalid compose mode \'-1\'!');
+        $composer->composeObject('{}', Class1::class, -1);
+    }
+
+    public function testComposeObjectMethodPOPOContainsNotAllJSONFields(): void
+    {
+        $composer = new Composer();
+        $jsonContent = file_get_contents(__DIR__ . '/Meta/JSON/10.json');
+        /** @var Class8 $actual */
+        $actual = $composer->composeObject($jsonContent, Class8::class, Composer::MODE_NON_STRICT);
+
+        $this->assertInstanceOf(Class8::class, $actual);
     }
 }

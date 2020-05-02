@@ -21,19 +21,51 @@ use ABGEO\POPO\Util\Normalizer;
 class Composer
 {
     /**
+     * This mode means that undefined JSON fields
+     * in target POPO will be IGNORED.
+     */
+    public const MODE_NON_STRICT = 0;
+
+    /**
+     * This mode means that all JSON fields
+     * MUST be represented in target POPO.
+     */
+    public const MODE_STRICT = 1;
+
+    /**
+     * Available modes.
+     *
+     * @var array
+     */
+    private array $availableModes = [
+        self::MODE_NON_STRICT,
+        self::MODE_STRICT,
+    ];
+
+    /**
+     * Current mode.
+     *
+     * @var int
+     */
+    private int $mode = self::MODE_STRICT;
+
+    /**
      * Compose a new object of this given class
      * and fill it with the given JSON content.
      *
      * @param string $json  JSON content to fill the new object.
      * @param string $class Class to create a new object from.
+     * @param int    $mode  Compose mode:
+     *                          self::MODE_NON_STRICT - Undefined JSON fields in target POPO will be IGNORED;
+     *                          self::MODE_STRICT     - All JSON fields MUST be represented in target POPO;
      *
      * @return mixed New filled with JSON content object of $class class.
-     *
-     * @throws \ReflectionException
      */
-    public function composeObject(string $json, string $class)
+    public function composeObject(string $json, string $class, int $mode = self::MODE_STRICT)
     {
+        $mainObject  = null;
         $jsonDecoded = json_decode($json);
+
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new \InvalidArgumentException("The JSON content is invalid!");
         }
@@ -42,6 +74,11 @@ class Composer
             throw new \InvalidArgumentException("Class '$class' not found!");
         }
 
+        if (!in_array($mode, $this->availableModes)) {
+            throw new \InvalidArgumentException("Invalid compose mode '$mode'!");
+        }
+
+        $this->mode = $mode;
         $mainObject = new $class();
 
         foreach (get_object_vars($jsonDecoded) as $property => $value) {
@@ -58,20 +95,36 @@ class Composer
      * @param string $property Object property to fill.
      * @param mixed  $value    Value to fill object property with.
      * @param mixed  $object   Object to fill.
-     *
-     * @throws \ReflectionException
      */
     private function fillObject(string $property, $value, $object)
     {
-        $class = get_class($object);
+        $reflectionProperty = null;
+        $propertySetter     = null;
+        $propertyType       = null;
+        $propertyTypeName   = null;
+        $_value             = null;
+        $_object            = null;
+        $class              = get_class($object);
+
+        try {
+            $reflectionProperty = new \ReflectionProperty($class, $property);
+        } catch (\ReflectionException $e) {
+            if (
+                "Property {$class}::\${$property} does not exist" === $e->getMessage()
+                && self::MODE_NON_STRICT === $this->mode
+            ) {
+                return;
+            } else {
+                throw new \RuntimeException($e->getMessage());
+            }
+        }
+
         $propertySetter = 'set' . ucfirst($property);
         if (!method_exists($object, $propertySetter)) {
             throw new \RuntimeException("Class '{$class}' does not have a method '{$propertySetter}'");
         }
 
         if (is_object($value)) {
-            $reflectionProperty = new \ReflectionProperty($class, $property);
-
             if (!$propertyType = $reflectionProperty->getType()) {
                 throw new \RuntimeException(
                     "Type of Property '{$class}::\${$property}' is undefined!"
