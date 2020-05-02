@@ -12,6 +12,20 @@
 namespace ABGEO\POPO;
 
 use ABGEO\POPO\Util\Normalizer;
+use InvalidArgumentException;
+use ReflectionException;
+use ReflectionProperty;
+use RuntimeException;
+use stdClass;
+
+use function call_user_func_array;
+use function class_exists;
+use function get_object_vars;
+use function in_array;
+use function is_object;
+use function method_exists;
+use function json_decode;
+use function json_last_error;
 
 /**
  * Compose Plain Old PHP Object from JSON content.
@@ -67,15 +81,15 @@ class Composer
         $jsonDecoded = json_decode($json);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \InvalidArgumentException("The JSON content is invalid!");
+            throw new InvalidArgumentException("The JSON content is invalid!");
         }
 
         if (!class_exists($class)) {
-            throw new \InvalidArgumentException("Class '$class' not found!");
+            throw new InvalidArgumentException("Class '$class' not found!");
         }
 
         if (!in_array($mode, $this->availableModes)) {
-            throw new \InvalidArgumentException("Invalid compose mode '$mode'!");
+            throw new InvalidArgumentException("Invalid compose mode '$mode'!");
         }
 
         $this->mode = $mode;
@@ -107,26 +121,26 @@ class Composer
         $class              = get_class($object);
 
         try {
-            $reflectionProperty = new \ReflectionProperty($class, $property);
-        } catch (\ReflectionException $e) {
+            $reflectionProperty = new ReflectionProperty($class, $property);
+        } catch (ReflectionException $e) {
             if (
                 "Property {$class}::\${$property} does not exist" === $e->getMessage()
                 && self::MODE_NON_STRICT === $this->mode
             ) {
                 return;
             } else {
-                throw new \RuntimeException($e->getMessage());
+                throw new RuntimeException($e->getMessage());
             }
         }
 
         $propertySetter = 'set' . ucfirst($property);
         if (!method_exists($object, $propertySetter)) {
-            throw new \RuntimeException("Class '{$class}' does not have a method '{$propertySetter}'");
+            throw new RuntimeException("Class '{$class}' does not have a method '{$propertySetter}'");
         }
 
         if (is_object($value)) {
             if (!$propertyType = $reflectionProperty->getType()) {
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     "Type of Property '{$class}::\${$property}' is undefined!"
                 );
             }
@@ -153,9 +167,9 @@ class Composer
      * Recursively fill a given array with a given Std Class.
      *
      * @param array     $array Reference to Array to fill.
-     * @param \stdClass $value Std Class Value to fill array with.
+     * @param stdClass $value Std Class Value to fill array with.
      */
-    private function fillArray(array &$array, \stdClass $value)
+    private function fillArray(array &$array, stdClass $value)
     {
         foreach (get_object_vars($value) as $_key => $_value) {
             if (is_object($_value)) {

@@ -11,6 +11,10 @@
 
 namespace ABGEO\POPO\Util;
 
+use function lcfirst;
+use function str_replace;
+use function ucwords;
+
 /**
  * Normalize things.
  *
