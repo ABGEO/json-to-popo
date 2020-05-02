@@ -210,7 +210,7 @@ class Composer
      */
     private function getDataForObject(string $propertyType, stdClass $value)
     {
-        if ('array' === $propertyType) {
+        if (!empty(AnnotationParser::getArrayElementsType($propertyType))) {
             return $this->composeKeyedArrayFromStdClass($value);
         }
 
@@ -227,12 +227,10 @@ class Composer
      */
     private function getDataForArray(string $propertyType, array $value): array
     {
+        $propertyType = AnnotationParser::getArrayElementsType($propertyType);
         $returnData = [];
 
-        // TODO: Check all generic types.
-        if ('[]' === substr($propertyType, -2)) {
-            // TODO: Create method in AnnotationParser to get property type from generic annotation.
-            $propertyType = substr($propertyType, 0, -2);
+        if ($propertyType) {
             foreach ($value as $item) {
                 if (is_object($item)) {
                     $returnData[] = $this->composeObjectFromStdClass($propertyType, $item);

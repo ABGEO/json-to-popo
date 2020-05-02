@@ -44,9 +44,54 @@ class AnnotationParser
     {
         if ($parsed = self::parseParameter($docComment, 'var')) {
             $parsed = explode(' ', $parsed);
+
+            if (false !== strpos($parsed[0], '|')) {
+                $parsed = explode('|', $parsed[0]);
+            }
+
             return $parsed[0];
         }
 
         return null;
+    }
+
+    /**
+     * Get class part from array type hint.
+     *
+     * @param string $type Document Comment.
+     *
+     * @return string|false array, class type or false if not array.
+     */
+    public static function getArrayElementsType(?string $type): string
+    {
+        if (!$type) {
+            return false;
+        }
+
+        $type = str_replace(' ', null, $type);
+
+        if ('[]' === substr($type, -2)) {
+            return substr($type, 0, -2);
+        }
+
+        if (empty($type)) {
+            return 'array';
+        }
+
+        preg_match('/<(.*?)>/', $type, $matches);
+        if (isset($matches[1]) && !empty($matches[1])) {
+            return $matches[1];
+        }
+
+        preg_match('/\[(.*?)]/', $type, $matches);
+        if (isset($matches[1]) && !empty($matches[1])) {
+            return $matches[1];
+        }
+
+        if ('array' == $type) {
+            return $type;
+        }
+
+        return false;
     }
 }
