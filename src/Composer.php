@@ -81,7 +81,9 @@ class Composer
             $propertyTypeName = $propertyType->getName();
 
             if ('array' === $propertyTypeName) {
-                $value = get_object_vars($value);
+                $_value = [];
+                $this->fillArray($_value, $value);
+                $value = $_value;
             } else {
                 $_object = new $propertyTypeName();
                 foreach (get_object_vars($value) as $_property => $_value) {
@@ -92,5 +94,23 @@ class Composer
         }
 
         call_user_func_array([$object, $propertySetter], [$value]);
+    }
+
+    /**
+     * Recursively fill a given array with a given Std Class.
+     *
+     * @param array     $array Reference to Array to fill.
+     * @param \stdClass $value Std Class Value to fill array with.
+     */
+    private function fillArray(array &$array, \stdClass $value)
+    {
+        foreach (get_object_vars($value) as $_key => $_value) {
+            if (is_object($_value)) {
+                $array[$_key] = [];
+                $this->fillArray($array[$_key], $_value);
+            } else {
+                $array[$_key] = $_value;
+            }
+        }
     }
 }

@@ -126,4 +126,18 @@ class ComposerTest extends TestCase
         $this->assertIsArray($actual->getKeyedArray());
         $this->assertEquals($excepted['keyedArray'], $actual->getKeyedArray());
     }
+
+    public function testComposeObjectMethodWithNestedKeyedArrays(): void
+    {
+        $composer = new Composer();
+        $jsonContent = file_get_contents(__DIR__ . '/Meta/JSON/8.json');
+        $excepted = json_decode($jsonContent, true);
+
+        /** @var Class6 $actual */
+        $actual = $composer->composeObject($jsonContent, Class6::class);
+
+        $this->assertInstanceOf(Class6::class, $actual);
+        $this->assertIsArray($actual->getKeyedArray());
+        $this->assertEquals($excepted['keyedArray'], $actual->getKeyedArray());
+    }
 }
