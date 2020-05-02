@@ -13,7 +13,7 @@ namespace ABGEO\POPO\Test\Meta\Classes;
 
 class Class2
 {
-    private string $title;
+    private $title;
 
     public function getTitle()
     {

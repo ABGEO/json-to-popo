@@ -14,8 +14,6 @@ Fill Plain Old PHP Object with JSON content.
 
 ## Installation
 
-**Note**: This library requires **PHP 7.4** or higher.
-
 You can install this library with [Composer](https://getcomposer.org/):
 
 - `composer require abgeo/json-to-popo`
@@ -88,8 +86,6 @@ class Person
 }
 
 ```
-
-**Note**: All properties in POPO classes must type-hinted (That's why we need PHP 7.4) and have setters.
 
 Now you want to convert this JSON to POPO with relations. This package gives you this ability.
 

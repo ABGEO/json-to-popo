@@ -11,6 +11,7 @@
 
 namespace ABGEO\POPO;
 
+use ABGEO\POPO\Util\AnnotationParser;
 use ABGEO\POPO\Util\Normalizer;
 use InvalidArgumentException;
 use ReflectionException;
@@ -115,7 +116,6 @@ class Composer
         $reflectionProperty = null;
         $propertySetter     = null;
         $propertyType       = null;
-        $propertyTypeName   = null;
         $_value             = null;
         $_object            = null;
         $class              = get_class($object);
@@ -139,20 +139,18 @@ class Composer
         }
 
         if (is_object($value)) {
-            if (!$propertyType = $reflectionProperty->getType()) {
+            if (!$propertyType = AnnotationParser::getType($reflectionProperty->getDocComment())) {
                 throw new RuntimeException(
                     "Type of Property '{$class}::\${$property}' is undefined!"
                 );
             }
 
-            $propertyTypeName = $propertyType->getName();
-
-            if ('array' === $propertyTypeName) {
+            if ('array' === $propertyType) {
                 $_value = [];
                 $this->fillArray($_value, $value);
                 $value = $_value;
             } else {
-                $_object = new $propertyTypeName();
+                $_object = new $propertyType();
                 foreach (get_object_vars($value) as $_property => $_value) {
                     $this->fillObject(Normalizer::camelize($_property), $_value, $_object);
                 }

@@ -13,7 +13,10 @@ namespace ABGEO\POPO\Test\Meta\Classes;
 
 class Class6
 {
-    private array $keyedArray;
+    /**
+     * @var array
+     */
+    private $keyedArray;
 
     public function getKeyedArray(): array
     {

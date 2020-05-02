@@ -13,7 +13,10 @@ namespace ABGEO\POPO\Test\Meta\Classes;
 
 class Class4
 {
-    private Class3 $class3;
+    /**
+     * @var \ABGEO\POPO\Test\Meta\Classes\Class3
+     */
+    private $class3;
 
     public function getClass3(): Class3
     {
