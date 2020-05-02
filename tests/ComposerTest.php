@@ -20,6 +20,7 @@ use ABGEO\POPO\Test\Meta\Classes\Class5;
 use ABGEO\POPO\Test\Meta\Classes\Class6;
 use ABGEO\POPO\Test\Meta\Classes\Class7;
 use ABGEO\POPO\Test\Meta\Classes\Class8;
+use ABGEO\POPO\Test\Meta\Classes\Class9;
 use PHPUnit\Framework\TestCase;
 
 class ComposerTest extends TestCase
@@ -169,5 +170,19 @@ class ComposerTest extends TestCase
         $actual = $composer->composeObject($jsonContent, Class8::class, Composer::MODE_NON_STRICT);
 
         $this->assertInstanceOf(Class8::class, $actual);
+    }
+
+    public function testComposeObjectMethodWithObjectsArray(): void
+    {
+        $composer = new Composer();
+        $jsonContent = file_get_contents(__DIR__ . '/Meta/JSON/11.json');
+
+        /** @var Class9 $actual */
+        $actual = $composer->composeObject($jsonContent, Class9::class);
+
+        $this->assertInstanceOf(Class9::class, $actual);
+        $this->assertIsArray($actual->getClass2s());
+        $this->assertCount(3, $actual->getClass2s());
+        $this->assertEquals('Object 1 Title', $actual->getClass2s()[0]->getTitle());
     }
 }

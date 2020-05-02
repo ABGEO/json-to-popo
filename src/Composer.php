@@ -138,13 +138,16 @@ class Composer
             throw new RuntimeException("Class '{$class}' does not have a method '{$propertySetter}'");
         }
 
-        if (is_object($value)) {
-            if (!$propertyType = AnnotationParser::getType($reflectionProperty->getDocComment())) {
-                throw new RuntimeException(
-                    "Type of Property '{$class}::\${$property}' is undefined!"
-                );
-            }
+        if (
+            (is_object($value) || is_array($value))
+            && !$propertyType = AnnotationParser::getType($reflectionProperty->getDocComment())
+        ) {
+            throw new RuntimeException(
+                "Type of Property '{$class}::\${$property}' is undefined!"
+            );
+        }
 
+        if (is_object($value)) {
             if ('array' === $propertyType) {
                 $_value = [];
                 $this->fillArray($_value, $value);
@@ -155,6 +158,24 @@ class Composer
                     $this->fillObject(Normalizer::camelize($_property), $_value, $_object);
                 }
                 $value = $_object;
+            }
+        } elseif (is_array($value)) {
+            if ('[]' === substr($propertyType, -2)) {
+                $propertyType = substr($propertyType, 0, -2);
+                $_value = [];
+                foreach ($value as $objectItem) {
+                    if (is_object($objectItem)) {
+                        $_object = new $propertyType();
+                        foreach (get_object_vars($objectItem) as $_property => $objectItemValue) {
+                            $this->fillObject(Normalizer::camelize($_property), $objectItemValue, $_object);
+                        }
+                        $_value[] = $_object;
+                    } else {
+                        $_value[] = $objectItem;
+                    }
+                }
+
+                $value = $_value;
             }
         }
 
