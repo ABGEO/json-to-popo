@@ -150,6 +150,10 @@ var_dump($resultObject);
 
 **See full example [here](examples).**
 
+## Changelog
+
+Please see [CHANGELOG](CHANGELOG.md) for details.
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
