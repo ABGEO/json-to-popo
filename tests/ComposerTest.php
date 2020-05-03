@@ -106,7 +106,7 @@ class ComposerTest extends TestCase
         $this->expectExceptionMessage(
             'Property \'ABGEO\POPO\Test\Meta\Classes\Class7::$classWithoutSetter\' does not have a setter!'
         );
-        $composer->composeObject($jsonContent, Class7::class, Composer::MODE_NON_STRICT);
+        $composer->composeObject($jsonContent, Class7::class);
     }
 
     public function testComposeObjectMethodUndefinedClassPropertyType(): void
@@ -155,19 +155,12 @@ class ComposerTest extends TestCase
         $this->assertEquals($excepted['keyedArray'], $actual->getKeyedArray());
     }
 
-    public function testComposeObjectMethodInvalidModeException(): void
-    {
-        $composer = new Composer();
-        $this->expectExceptionMessage('Invalid compose mode \'-1\'!');
-        $composer->composeObject('{}', Class1::class, -1);
-    }
-
     public function testComposeObjectMethodPOPOContainsNotAllJSONFields(): void
     {
         $composer = new Composer();
         $jsonContent = file_get_contents(__DIR__ . '/Meta/JSON/10.json');
         /** @var Class8 $actual */
-        $actual = $composer->composeObject($jsonContent, Class8::class, Composer::MODE_NON_STRICT);
+        $actual = $composer->composeObject($jsonContent, Class8::class);
 
         $this->assertInstanceOf(Class8::class, $actual);
     }

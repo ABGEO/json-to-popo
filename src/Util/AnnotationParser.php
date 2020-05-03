@@ -19,7 +19,6 @@ use function str_replace;
 use function substr;
 use function preg_match;
 use function trim;
-use function array_map;
 
 /**
  * Parse Class, Method or Property annotations.
@@ -74,18 +73,28 @@ class AnnotationParser
      */
     public static function getIgnoredProperties(string $docComment): ?array
     {
+        $return = [
+            'properties' => [],
+            'options' => [],
+        ];
         $parsed = self::parseParameter($docComment, 'ignoredProperties');
 
         if (!$parsed) {
-            return null;
+            return $return;
         }
 
-        return array_map(
-            static function ($value) {
-                return trim(str_replace(['"', '\'', '$'], null, $value));
-            },
-            explode(',', $parsed)
-        );
+        foreach (explode(',', $parsed) as $property) {
+            $property = trim(str_replace(['"', '\'', '$'], null, $property));
+
+            if (false !== strpos($property, '=')) {
+                $option = explode('=', $property);
+                $return['options'][trim($option[0])] = trim($option[1]);
+            } else {
+                $return['properties'][] = $property;
+            }
+        }
+
+        return $return;
     }
 
     /**

@@ -11,6 +11,9 @@
 
 namespace ABGEO\POPO\Test\Meta\Classes;
 
+/**
+ * @ignoredProperties(ignoreUnknown = true)
+ */
 class Class8
 {
     /**

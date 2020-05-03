@@ -39,35 +39,6 @@ use function get_class;
 class Composer
 {
     /**
-     * This mode means that undefined JSON fields
-     * in target POPO will be IGNORED.
-     */
-    public const MODE_NON_STRICT = 0;
-
-    /**
-     * This mode means that all JSON fields
-     * MUST be represented in target POPO.
-     */
-    public const MODE_STRICT = 1;
-
-    /**
-     * Available modes.
-     *
-     * @var array
-     */
-    private $availableModes = [
-        self::MODE_NON_STRICT,
-        self::MODE_STRICT,
-    ];
-
-    /**
-     * Current mode.
-     *
-     * @var int
-     */
-    private $mode = self::MODE_STRICT;
-
-    /**
      * Ignored POPO Properties.
      *
      * @var array
@@ -80,13 +51,10 @@ class Composer
      *
      * @param string $json  JSON content to fill the new object.
      * @param string $class Class to create a new object from.
-     * @param int    $mode  Compose mode:
-     *                          self::MODE_NON_STRICT - Undefined JSON fields in target POPO will be IGNORED;
-     *                          self::MODE_STRICT     - All JSON fields MUST be represented in target POPO;
      *
      * @return object New filled with JSON content object of $class class.
      */
-    public function composeObject(string $json, string $class, int $mode = self::MODE_STRICT): object
+    public function composeObject(string $json, string $class): object
     {
         $jsonDecoded = json_decode($json);
 
@@ -98,11 +66,6 @@ class Composer
             throw new InvalidArgumentException("Class '$class' not found!");
         }
 
-        if (!in_array($mode, $this->availableModes)) {
-            throw new InvalidArgumentException("Invalid compose mode '$mode'!");
-        }
-
-        $this->mode = $mode;
         $this->updateIgnoredProperties($class);
 
         return $this->composeObjectFromStdClass($class, $jsonDecoded);
@@ -172,7 +135,7 @@ class Composer
         } catch (ReflectionException $e) {
             if (
                 "Property {$class}::\${$property} does not exist" === $e->getMessage()
-                && self::MODE_NON_STRICT === $this->mode
+                && 'true' === ($this->ignoredProperties[$class]['options']['ignoreUnknown'] ?? null)
             ) {
                 return;
             } else {
@@ -274,17 +237,22 @@ class Composer
         try {
             $reflectionClass = new ReflectionClass($class);
 
-            $this->ignoredProperties[$class] = [];
+            $this->ignoredProperties[$class] = [
+                'properties' => [],
+                'options' => [],
+            ];
             if ($ignoredProperties = AnnotationParser::getIgnoredProperties($reflectionClass->getDocComment())) {
-                foreach ($ignoredProperties as $property) {
+                foreach ($ignoredProperties['properties'] as $property) {
                     if (!$reflectionClass->hasProperty($property)) {
                         throw new RuntimeException(
                             "Property {$class}::\${$property} passed in '@ignoredProperties' does not exist"
                         );
                     }
 
-                    $this->ignoredProperties[$class][] = $property;
+                    $this->ignoredProperties[$class]['properties'][] = $property;
                 }
+
+                $this->ignoredProperties[$class]['options'] = $ignoredProperties['options'];
             }
         } catch (ReflectionException $e) {
         }
