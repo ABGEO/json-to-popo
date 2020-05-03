@@ -14,6 +14,7 @@ namespace ABGEO\POPO;
 use ABGEO\POPO\Util\AnnotationParser;
 use ABGEO\POPO\Util\Normalizer;
 use InvalidArgumentException;
+use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
 use RuntimeException;
@@ -67,6 +68,13 @@ class Composer
     private $mode = self::MODE_STRICT;
 
     /**
+     * Ignored POPO Properties.
+     *
+     * @var array
+     */
+    private $ignoredProperties = [];
+
+    /**
      * Compose a new object of this given class
      * and fill it with the given JSON content.
      *
@@ -95,6 +103,7 @@ class Composer
         }
 
         $this->mode = $mode;
+        $this->updateIgnoredProperties($class);
 
         return $this->composeObjectFromStdClass($class, $jsonDecoded);
     }
@@ -149,6 +158,14 @@ class Composer
         $class              = get_class($object);
         $reflectionProperty = null;
         $propertyType       = null;
+
+        if (!isset($this->ignoredProperties[$class])) {
+            $this->updateIgnoredProperties($class);
+        }
+
+        if (in_array($property, $this->ignoredProperties[$class])) {
+            return;
+        }
 
         try {
             $reflectionProperty = new ReflectionProperty($class, $property);
@@ -242,5 +259,34 @@ class Composer
         }
 
         return $value;
+    }
+
+    /**
+     * Update ignored properties for given class.
+     *
+     * @param string $class The Class update ignored properties for.
+     */
+    private function updateIgnoredProperties(string $class): void
+    {
+        $reflectionClass   = null;
+        $ignoredProperties = null;
+
+        try {
+            $reflectionClass = new ReflectionClass($class);
+
+            $this->ignoredProperties[$class] = [];
+            if ($ignoredProperties = AnnotationParser::getIgnoredProperties($reflectionClass->getDocComment())) {
+                foreach ($ignoredProperties as $property) {
+                    if (!$reflectionClass->hasProperty($property)) {
+                        throw new RuntimeException(
+                            "Property {$class}::\${$property} passed in '@ignoredProperties' does not exist"
+                        );
+                    }
+
+                    $this->ignoredProperties[$class][] = $property;
+                }
+            }
+        } catch (ReflectionException $e) {
+        }
     }
 }

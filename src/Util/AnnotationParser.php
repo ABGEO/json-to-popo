@@ -18,6 +18,8 @@ use function strpos;
 use function str_replace;
 use function substr;
 use function preg_match;
+use function trim;
+use function array_map;
 
 /**
  * Parse Class, Method or Property annotations.
@@ -36,9 +38,9 @@ class AnnotationParser
      */
     public static function parseParameter(string $docComment, string $parameter)
     {
-        preg_match_all("/@{$parameter} (.*)[ ]*(?:@|\r\n|\n)/U", $docComment, $matches);
+        preg_match_all("/@{$parameter}[@ (](.*)[ ]*(?:@|\r\n|\n|\))/U", $docComment, $matches);
 
-        return sizeof($matches[1]) === 0 ? null : ($matches[1][0] ?? null);
+        return sizeof($matches[1]) === 0 ? null : (trim($matches[1][0]) ?? null);
     }
 
     /**
@@ -61,6 +63,29 @@ class AnnotationParser
         }
 
         return null;
+    }
+
+    /**
+     * Parse ignoredProperties parameter of given Document Comment.
+     *
+     * @param string $docComment Document Comment.
+     *
+     * @return array|null Parsed value or null.
+     */
+    public static function getIgnoredProperties(string $docComment): ?array
+    {
+        $parsed = self::parseParameter($docComment, 'ignoredProperties');
+
+        if (!$parsed) {
+            return null;
+        }
+
+        return array_map(
+            static function ($value) {
+                return trim(str_replace(['"', '\'', '$'], null, $value));
+            },
+            explode(',', $parsed)
+        );
     }
 
     /**
