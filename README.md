@@ -2,15 +2,11 @@
 
 Fill Plain Old PHP Object with JSON content.
 
-[![Build Status](https://travis-ci.com/ABGEO07/json-to-popo.svg?branch=master)](https://travis-ci.com/ABGEO07/json-to-popo)
-[![Coverage Status](https://coveralls.io/repos/github/ABGEO07/json-to-popo/badge.svg?branch=master)](https://coveralls.io/github/ABGEO07/json-to-popo?branch=master)
+[![Build Status](https://travis-ci.com/ABGEO07/json-to-popo.svg?branch=1.x)](https://travis-ci.com/ABGEO07/json-to-popo?branch=1.x)
+[![Coverage Status](https://coveralls.io/repos/github/ABGEO07/json-to-popo/badge.svg?branch=1.x)](https://coveralls.io/github/ABGEO07/json-to-popo?branch=1.x)
 [![GitHub release](https://img.shields.io/github/release/ABGEO07/json-to-popo.svg)](https://github.com/ABGEO07/json-to-popo/releases)
 [![Packagist Version](https://img.shields.io/packagist/v/abgeo/json-to-popo.svg)](https://packagist.org/packages/abgeo/json-to-popo)
 [![GitHub license](https://img.shields.io/github/license/ABGEO07/json-to-popo.svg)](https://github.com/ABGEO07/json-to-popo/blob/master/LICENSE)
-
-## Authors
-
-- [**Temuri Takalandze**](https://abgeo.dev) - *Initial work*
 
 ## Installation
 
@@ -49,7 +45,10 @@ and several POPO classes to represent this JSON data:
 
 class Department
 {
-    private string $title;
+    /**
+     * @var string
+     */
+    private $title;
 
     // Getters and Setters here...
 }
@@ -62,12 +61,18 @@ class Department
 
 class Position
 {
-    private string $title;
-    private Department $department;
+    /**
+     * @var string
+     */
+    private $title;
+
+    /**
+     * @var \ABGEO\POPO\Example\Department
+     */
+    private $department;
 
     // Getters and Setters here...
 }
-
 ```
 
 `Person.php`
@@ -77,15 +82,31 @@ class Position
 
 class Person
 {
-    private string $firstName;
-    private string $lastName;
-    private bool $active;
-    private Position $position;
+    /**
+     * @var string
+     */
+    private $firstName;
+
+    /**
+     * @var string
+     */
+    private $lastName;
+
+    /**
+     * @var bool
+     */
+    private $active;
+
+    /**
+     * @var \ABGEO\POPO\Example\Position
+     */
+    private $position;
 
     // Getters and Setters here...
 }
-
 ```
+
+**Note**: All POPO properties must have full qualified `@var` annotation with the correct data type.
 
 Now you want to convert this JSON to POPO with relations. This package gives you this ability.
 
@@ -134,6 +155,10 @@ var_dump($resultObject);
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
+
+## Authors
+
+- [**Temuri Takalandze**](https://abgeo.dev) - *Initial work*
 
 ## License
 
