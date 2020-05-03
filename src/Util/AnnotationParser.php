@@ -116,10 +116,6 @@ class AnnotationParser
             return substr($type, 0, -2);
         }
 
-        if (empty($type)) {
-            return 'array';
-        }
-
         preg_match('/<(.*?)>/', $type, $matches);
         if (isset($matches[1]) && !empty($matches[1])) {
             return $matches[1];
