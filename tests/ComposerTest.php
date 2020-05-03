@@ -13,6 +13,8 @@ namespace ABGEO\POPO\Test;
 
 use ABGEO\POPO\Composer;
 use ABGEO\POPO\Test\Meta\Classes\Class1;
+use ABGEO\POPO\Test\Meta\Classes\Class10;
+use ABGEO\POPO\Test\Meta\Classes\Class11;
 use ABGEO\POPO\Test\Meta\Classes\Class2;
 use ABGEO\POPO\Test\Meta\Classes\Class3;
 use ABGEO\POPO\Test\Meta\Classes\Class4;
@@ -177,5 +179,28 @@ class ComposerTest extends TestCase
         $this->assertIsArray($actual->getClass2s());
         $this->assertCount(3, $actual->getClass2s());
         $this->assertEquals('Object 1 Title', $actual->getClass2s()[0]->getTitle());
+    }
+
+    public function testComposeObjectMethodWithIgnoredProperty(): void
+    {
+        $composer = new Composer();
+        $jsonContent = file_get_contents(__DIR__ . '/Meta/JSON/12.json');
+
+        /** @var Class10 $actual */
+        $actual = $composer->composeObject($jsonContent, Class10::class);
+
+        $this->assertNull($actual->getField1());
+        $this->assertEquals('value2', $actual->getField2());
+    }
+
+    public function testComposeObjectMethodInvalidIgnoredProperty(): void
+    {
+        $composer = new Composer();
+        $jsonContent = file_get_contents(__DIR__ . '/Meta/JSON/12.json');
+
+        $this->expectExceptionMessage(
+            'Property ABGEO\POPO\Test\Meta\Classes\Class11::$invalidField passed in \'@ignoredProperties\' does not exist'
+        );
+        $composer->composeObject($jsonContent, Class11::class);
     }
 }

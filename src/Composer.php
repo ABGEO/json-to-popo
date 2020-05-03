@@ -126,7 +126,7 @@ class Composer
             $this->updateIgnoredProperties($class);
         }
 
-        if (in_array($property, $this->ignoredProperties[$class])) {
+        if (in_array($property, $this->ignoredProperties[$class]['properties'])) {
             return;
         }
 
