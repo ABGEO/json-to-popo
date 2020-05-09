@@ -2,11 +2,11 @@
 
 Fill Plain Old PHP Object with JSON content.
 
-[![Build Status](https://travis-ci.com/ABGEO07/json-to-popo.svg?branch=1.x)](https://travis-ci.com/ABGEO07/json-to-popo?branch=1.x)
-[![Coverage Status](https://coveralls.io/repos/github/ABGEO07/json-to-popo/badge.svg?branch=1.x)](https://coveralls.io/github/ABGEO07/json-to-popo?branch=1.x)
-[![GitHub release](https://img.shields.io/github/release/ABGEO07/json-to-popo.svg)](https://github.com/ABGEO07/json-to-popo/releases)
+[![Build Status](https://travis-ci.com/ABGEO/json-to-popo.svg?branch=1.x)](https://travis-ci.com/ABGEO/json-to-popo?branch=1.x)
+[![Coverage Status](https://coveralls.io/repos/github/ABGEO/json-to-popo/badge.svg?branch=1.x)](https://coveralls.io/github/ABGEO/json-to-popo?branch=1.x)
+[![GitHub release](https://img.shields.io/github/release/ABGEO/json-to-popo.svg)](https://github.com/ABGEO/json-to-popo/releases)
 [![Packagist Version](https://img.shields.io/packagist/v/abgeo/json-to-popo.svg)](https://packagist.org/packages/abgeo/json-to-popo)
-[![GitHub license](https://img.shields.io/github/license/ABGEO07/json-to-popo.svg)](https://github.com/ABGEO07/json-to-popo/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/ABGEO/json-to-popo.svg)](https://github.com/ABGEO/json-to-popo/blob/master/LICENSE)
 
 ## Installation
 
