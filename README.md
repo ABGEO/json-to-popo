@@ -167,4 +167,4 @@ Please make sure to update tests as appropriate.
 ## License
 
 Copyright © 2020 [Temuri Takalandze](https://abgeo.dev).  
-Released under the [MIT](LICENSE) license.
+Released under the [GNU GPLv3](LICENSE) license.
